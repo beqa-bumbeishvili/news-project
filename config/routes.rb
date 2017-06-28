@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
-  resources :news_versions
+  namespace :admin do
+    resources :news_versions
+  end
+
   root 'news_versions#index'
 end

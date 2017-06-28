@@ -5,7 +5,7 @@
 <table>
   <thead>
     <tr>
-      <th>News</th>
+      <th>News number</th>
       <th>Title</th>
       <th>Content</th>
       <th>Published at</th>
@@ -19,16 +19,16 @@
   <tbody>
     <% @news_versions.each do |news_version| %>
       <tr>
-        <td><%= news_version.news %></td>
+        <td><%= news_version.news.number %></td>
         <td><%= news_version.title %></td>
         <td><%= news_version.content %></td>
         <td><%= news_version.published_at %></td>
-        <td><%= news_version.post_type %></td>
+        <td><%= news_version.news_type.id_name %></td>
         <td><%= news_version.created_at %></td>
         <td><%= news_version.updated_at %></td>
-        <td><%= link_to 'Show', news_version %></td>
-        <td><%= link_to 'Edit', edit_news_version_path(news_version) %></td>
-        <td><%= link_to 'Destroy', news_version, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Show', admin_news_version_path(news_version) %></td>
+        <td><%= link_to 'Edit', edit_admin_news_version_path(news_version) %></td>
+        <td><%= link_to 'Destroy', admin_news_version_path(news_version), method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
@@ -36,4 +36,4 @@
 
 <br>
 
-<%= link_to 'New News Version', new_news_version_path %>
+<%= link_to 'New News Version', new_admin_news_version_path %>

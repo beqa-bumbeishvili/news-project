@@ -1,4 +1,5 @@
-class NewsVersionsController < ApplicationController
+class Admin::NewsVersionsController < ApplicationController
+
   before_action :set_news_version, only: [:show, :edit, :update, :destroy]
 
   # GET /news_versions
@@ -14,7 +15,10 @@ class NewsVersionsController < ApplicationController
 
   # GET /news_versions/new
   def new
-    @news_version = NewsVersion.new
+    @news = News.new
+    @news.created_at = DateTime.now
+
+    1.times { @news.news_versions.build }
   end
 
   # GET /news_versions/1/edit
@@ -24,15 +28,15 @@ class NewsVersionsController < ApplicationController
   # POST /news_versions
   # POST /news_versions.json
   def create
-    @news_version = NewsVersion.new(news_version_params)
+    @news = News.new(news_version_params)
 
     respond_to do |format|
-      if @news_version.save
-        format.html { redirect_to @news_version, notice: 'News version was successfully created.' }
-        format.json { render :show, status: :created, location: @news_version }
+      if @news.save
+        format.html { redirect_to NewsVersion.last, notice: 'News version was successfully created.' }
+        format.json { render :show, status: :created, location: @news }
       else
         format.html { render :new }
-        format.json { render json: @news_version.errors, status: :unprocessable_entity }
+        format.json { render json: @news.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -56,7 +60,7 @@ class NewsVersionsController < ApplicationController
   def destroy
     @news_version.destroy
     respond_to do |format|
-      format.html { redirect_to news_versions_url, notice: 'News version was successfully destroyed.' }
+      format.html { redirect_to admin_news_versions_url, notice: 'News version was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
@@ -69,6 +73,7 @@ class NewsVersionsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def news_version_params
-      params.require(:news_version).permit(:news_id, :title, :content, :published_at, :post_type_id, :created_at, :updated_at)
+      params.require(:news).permit(:id, :number,
+                                   news_versions_attributes: [:title, :content, :published_at, :news_type_id, :created_at, :updated_at])
     end
 end
