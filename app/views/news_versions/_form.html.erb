@@ -1,0 +1,52 @@
+<%= form_with(model: news_version, local: true) do |form| %>
+  <% if news_version.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(news_version.errors.count, "error") %> prohibited this news_version from being saved:</h2>
+
+      <ul>
+      <% news_version.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :news_id %>
+    <%= form.text_field :news_id, id: :news_version_news_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :title %>
+    <%= form.text_field :title, id: :news_version_title %>
+  </div>
+
+  <div class="field">
+    <%= form.label :content %>
+    <%= form.text_field :content, id: :news_version_content %>
+  </div>
+
+  <div class="field">
+    <%= form.label :published_at %>
+    <%= form.datetime_select :published_at, id: :news_version_published_at %>
+  </div>
+
+  <div class="field">
+    <%= form.label :post_type_id %>
+    <%= form.text_field :post_type_id, id: :news_version_post_type_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :created_at %>
+    <%= form.text_field :created_at, id: :news_version_created_at %>
+  </div>
+
+  <div class="field">
+    <%= form.label :updated_at %>
+    <%= form.datetime_select :updated_at, id: :news_version_updated_at %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

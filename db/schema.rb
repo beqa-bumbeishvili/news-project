@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170628135903) do
+ActiveRecord::Schema.define(version: 20170628140713) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,4 +25,18 @@ ActiveRecord::Schema.define(version: 20170628135903) do
     t.string "id_name"
   end
 
+  create_table "news_versions", force: :cascade do |t|
+    t.bigint "news_id"
+    t.string "title"
+    t.string "content"
+    t.datetime "published_at"
+    t.bigint "news_type_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["news_id"], name: "index_news_versions_on_news_id"
+    t.index ["news_type_id"], name: "index_news_versions_on_news_type_id"
+  end
+
+  add_foreign_key "news_versions", "news"
+  add_foreign_key "news_versions", "news_types"
 end
