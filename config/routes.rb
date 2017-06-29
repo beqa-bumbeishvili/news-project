@@ -3,5 +3,5 @@ Rails.application.routes.draw do
     resources :news_versions
   end
 
-  root 'news_versions#index'
+  root 'admin/news_versions#index'
 end
