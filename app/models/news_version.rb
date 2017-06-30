@@ -1,5 +1,6 @@
 class NewsVersion < ApplicationRecord
-  has_attached_file :image, styles: { large: '600x600', medium: '300x300', thumb: '100x100' }
+  has_attached_file :image, styles: { large: '600x600', medium: '300x300', thumb: '100x100' }, default_url: 'https://ichef.bbci.co.uk/news/1024/media/images/48351000/gif/_48351569_640x360-news.gif'
+  validates_attachment_content_type :image, content_type: /\Aimage\/.*\Z/
 
   belongs_to :news
   belongs_to :news_type

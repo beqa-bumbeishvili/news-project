@@ -63,6 +63,6 @@ class Admin::NewsVersionsController < ApplicationController
 
     def news_version_params
       params.require(:news).permit(:id, :number,
-                                   news_versions_attributes: [:title, :content, :published_at, :news_type_id, :created_at, :updated_at])
+                                   news_versions_attributes: [:title, :content, :published_at, :news_type_id, :image, :created_at, :updated_at])
     end
 end

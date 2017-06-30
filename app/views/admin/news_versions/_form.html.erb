@@ -1,4 +1,4 @@
-<%= form_with(model: news, local: true, url: admin_news_versions_path) do |news_form| %>
+<%= form_with(model: news, local: true, html: { multipart: true },  url: admin_news_versions_path) do |news_form| %>
   <% if news.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(news_version.errors.count, 'error') %> prohibited this news_version from being saved:</h2>
@@ -36,6 +36,12 @@
     <div class="field">
       <%= form.label :published_at %>
       <%= form.datetime_select :published_at, id: :news_version_published_at %>
+    </div>
+
+
+    <div class="field">
+      <%= form.label :image %>
+      <%= form.file_field :image %>
     </div>
 
     <div class="field">
