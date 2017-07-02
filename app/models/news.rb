@@ -9,7 +9,7 @@ class News < ApplicationRecord
   private
 
   def set_number
-    self.number = News.last.number + 1
+    self.number = News.count > 0 ? News.last.number + 1 : 1
   end
 
 end

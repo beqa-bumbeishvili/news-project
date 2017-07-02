@@ -16,19 +16,16 @@
       <%= news_form.text_field :number, id: :news_number %>
     </div>
 
-  <%= news_form.fields_for :news_versions do |form| %>
+    <%= news_form.hidden_field :id, value: @news.id %>
 
-    <div class="field">
-      <%= form.label :news_id %>
-      <%= form.text_field :news_id, id: :news_version_news_id %>
-    </div>
+    <%= news_form.fields_for :news_versions do |form| %>
 
     <div class="field">
       <%= form.label :title %>
       <%= form.text_field :title, id: :news_version_title %>
     </div>
 
-    <div class="field">
+     <div class="field">
       <%= form.label :content %>
       <%= form.text_field :content, id: :news_version_content %>
     </div>
@@ -37,13 +34,6 @@
       <%= form.label :published_at %>
       <%= form.datetime_select :published_at, id: :news_version_published_at %>
     </div>
-
-   <% if @current_user.is_admin %>
-   <div class="field">
-      <%= form.label :is_draft %>
-      <%= form.check_box :is_draft, id: :news_version_is_draft %>
-   </div>
-   <% end %>
 
     <div class="field">
       <%= form.label :image %>

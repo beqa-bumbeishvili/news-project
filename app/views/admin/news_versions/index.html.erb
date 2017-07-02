@@ -43,5 +43,6 @@
 </table>
 
 <br>
-
+<% if user_signed_in? %>
 <%= link_to 'New Version', new_admin_news_version_path %>
+<% end %>

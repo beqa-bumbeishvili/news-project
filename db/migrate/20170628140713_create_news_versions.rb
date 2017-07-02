@@ -5,7 +5,6 @@ class CreateNewsVersions < ActiveRecord::Migration[5.1]
       t.string :title
       t.string :content
       t.datetime :published_at
-      t.references :news_type, foreign_key: true
       t.datetime :created_at
       t.datetime :updated_at
     end

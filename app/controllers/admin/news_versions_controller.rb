@@ -20,17 +20,20 @@ class Admin::NewsVersionsController < ApplicationController
     @news = News.new
     @news.created_at = DateTime.now
 
-    @news.news_versions.build
+    if current_user.is_admin
+      @news.news_versions.build.is_draft = true
+    else
+      @news.news_versions.build
+    end
+
   end
 
   def edit
-    @news.news_versions.build
     @current_user = current_user
   end
 
   def create
     @news = News.new(news_version_params)
-    @news.is_draft = current_user.is_admin ? false : true
     respond_to do |format|
       if @news.save
         format.html { redirect_to admin_news_version_path(@news), notice: 'News version was successfully created.' }
@@ -56,16 +59,11 @@ class Admin::NewsVersionsController < ApplicationController
         end
       end
     else
-      @news = News.new(news_version_params)
-        respond_to do |format|
-          if @news.save
-            format.html { redirect_to admin_news_version_path(@news), notice: 'News version was successfully created.'}
-            format.json { render :show, status: :created, location: @news }
-          else
-            format.html { render :new }
-            format.json { render json: @news.errors, status: :unprocessable_entity }
-          end
-       end
+      version = news_version_params[:news_versions_attributes]['0']
+      news_version = NewsVersion.new(news_id: params[:news]['id'], title: version[:title], content: version[:content],
+                                     published_at: version[:published_at], active: false, is_draft: true)
+      news_version.save!
+      redirect_to admin_news_versions_path
     end
   end
 
@@ -115,6 +113,6 @@ class Admin::NewsVersionsController < ApplicationController
 
     def news_version_params
       params.require(:news).permit(:id, :number,
-                                   news_versions_attributes: [:news_id, :title, :content, :published_at, :is_draft, :image, :created_at, :updated_at])
+                                   news_versions_attributes: [:id, :news_id, :title, :content, :published_at, :is_draft, :image, :created_at, :updated_at, :_destroy])
     end
 end
