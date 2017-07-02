@@ -47,11 +47,12 @@ class Admin::NewsVersionsController < ApplicationController
 
   def update
     if current_user.is_admin
-      @news = News.find(news_version_params)
-      @news.is_draft = false
+      @news = News.find(params[:news]['id'])
+      news_version_params[:is_draft] = false
+      news_version_params[:active] = true
       respond_to do |format|
         if @news.update(news_version_params)
-          format.html { redirect_to @news, notice: 'News version was successfully updated.' }
+          format.html { redirect_to admin_news_version_path(@news), notice: 'News version was successfully updated.' }
           format.json { render :show, status: :ok, location: @news }
         else
           format.html { render :edit }
