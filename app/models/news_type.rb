@@ -1,2 +1,0 @@
-class NewsType < ApplicationRecord
-end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170701144935) do
+ActiveRecord::Schema.define(version: 20170702071016) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -18,11 +18,8 @@ ActiveRecord::Schema.define(version: 20170701144935) do
   create_table "news", force: :cascade do |t|
     t.integer "number"
     t.datetime "created_at"
-  end
-
-  create_table "news_types", force: :cascade do |t|
-    t.string "name"
-    t.string "id_name"
+    t.integer "news_version_id"
+    t.index ["id", "news_version_id"], name: "index_news_on_id_and_news_version_id", unique: true
   end
 
   create_table "news_versions", force: :cascade do |t|
@@ -30,15 +27,23 @@ ActiveRecord::Schema.define(version: 20170701144935) do
     t.string "title"
     t.string "content"
     t.datetime "published_at"
-    t.bigint "news_type_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "image_file_name"
     t.string "image_content_type"
     t.integer "image_file_size"
     t.datetime "image_updated_at"
+    t.boolean "active", default: true
+    t.boolean "is_draft", default: true
+    t.boolean "mark_for_deletion", default: false
+    t.index ["news_id", "active"], name: "index_news_versions_on_news_id_and_active", unique: true, where: "(active = true)"
     t.index ["news_id"], name: "index_news_versions_on_news_id"
-    t.index ["news_type_id"], name: "index_news_versions_on_news_type_id"
+  end
+
+  create_table "roles", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -54,10 +59,11 @@ ActiveRecord::Schema.define(version: 20170701144935) do
     t.inet "last_sign_in_ip"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_admin", default: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "news", "news_versions"
   add_foreign_key "news_versions", "news"
-  add_foreign_key "news_versions", "news_types"
 end

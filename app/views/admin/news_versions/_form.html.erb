@@ -38,16 +38,18 @@
       <%= form.datetime_select :published_at, id: :news_version_published_at %>
     </div>
 
+   <% if @current_user.is_admin %>
+   <div class="field">
+      <%= form.label :is_draft %>
+      <%= form.check_box :is_draft, id: :news_version_is_draft %>
+   </div>
+   <% end %>
 
     <div class="field">
       <%= form.label :image %>
       <%= form.file_field :image %>
     </div>
 
-    <div class="field">
-      <%= form.label :news_type %>
-      <%= form.collection_select :news_type_id, NewsType.all, :id, :id_name %>
-    </div>
   <% end %>
 
   <div class="actions">

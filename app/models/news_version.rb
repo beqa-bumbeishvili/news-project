@@ -3,11 +3,9 @@ class NewsVersion < ApplicationRecord
   validates_attachment_content_type :image, content_type: /\Aimage\/.*\Z/
 
   belongs_to :news
-  belongs_to :news_type
 
   before_create :set_dates
   before_update :set_updated_at
-
 
   private
 
@@ -19,6 +17,5 @@ class NewsVersion < ApplicationRecord
   def set_updated_at
     self.updated_at = DateTime.now
   end
-
 
 end
