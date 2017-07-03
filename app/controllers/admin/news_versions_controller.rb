@@ -40,26 +40,21 @@ class Admin::NewsVersionsController < ApplicationController
   end
 
   def update
-    if current_user.is_admin
+    if current_user.is_admin    #if admin edits version
       @news = News.find(params[:news]['id'])
-      news_version_params[:is_draft] = false
-      news_version_params[:active] = true
+      version_params = NewsService.set_draft_and_active(news_version_params)
       respond_to do |format|
-        if @news.update(news_version_params)
-          news_active_version = NewsVersion.where("news_id = #{@news.id} AND active = true").last
-          @news.update(news_version_id: news_active_version.id) if news_active_version.present?
+        if @news.update(version_params)
+          NewsService.update_version_id_in_news(@news)
           format.html { redirect_to admin_news_version_path(version_from_news(@news.news_version_id)), notice: 'News version was successfully updated.' }
-          format.json { render :show, status: :ok, location: @news }
+          #format.json { render :show, status: :ok, location: @news }
         else
           format.html { render :edit }
-          format.json { render json: @news.errors, status: :unprocessable_entity }
+          #format.json { render json: @news.errors, status: :unprocessable_entity }
         end
       end
     else
-      version = news_version_params[:news_versions_attributes]['0']
-      news_version = NewsVersion.new(news_id: params[:news]['id'], title: version[:title], content: version[:content],
-                                     published_at: version[:published_at], active: false, is_draft: true)
-      news_version.save!
+      NewsService.create_new_version(news_version_params)   #if authorized user edits version, not admin
       redirect_to admin_news_versions_path
     end
   end
@@ -83,24 +78,14 @@ class Admin::NewsVersionsController < ApplicationController
       @version.news.update(news_version_id: @version.id)
     end
     @current_user = current_user
-    if @current_user.present?
-      @news_versions = NewsVersion.all if @current_user.is_admin
-      @news_versions = NewsVersion.where(active: true) unless @current_user.is_admin
-    else
-      @news_versions = NewsVersion.where('active = true AND is_draft = false')
-    end
+    @news_versions = NewsService.get_news_versions(@current_user)
     render :index
   end
 
   def remove_draft
     NewsVersion.find(params[:id]).update(is_draft: false)
     @current_user = current_user
-    if @current_user.present?
-      @news_versions = NewsVersion.all if @current_user.is_admin
-      @news_versions = NewsVersion.where(active: true) unless @current_user.is_admin
-    else
-      @news_versions = NewsVersion.where('active = true AND is_draft = false')
-    end
+    @news_versions = NewsService.get_news_versions(@current_user)
     render :index
   end
 
@@ -117,6 +102,6 @@ class Admin::NewsVersionsController < ApplicationController
 
     def news_version_params
       params.require(:news).permit(:id, :number,
-                                   news_versions_attributes: [:id, :news_id, :title, :content, :published_at, :is_draft, :image, :created_at, :updated_at, :_destroy])
+                                   news_versions_attributes: [:id, :news_id, :title, :content, :published_at, :is_draft, :active, :image, :created_at, :updated_at, :_destroy])
     end
 end
