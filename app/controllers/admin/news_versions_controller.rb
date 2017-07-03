@@ -31,10 +31,8 @@ class Admin::NewsVersionsController < ApplicationController
       if @news.save
         @news.update(news_version_id: NewsVersion.last.id) if NewsVersion.last.active == true
         format.html { redirect_to admin_news_version_path(version_from_news(@news.news_version_id)), notice: 'News version was successfully created.' }
-        format.json { render :show, status: :created, location: @news }
       else
         format.html { render :new }
-        format.json { render json: @news.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -47,10 +45,8 @@ class Admin::NewsVersionsController < ApplicationController
         if @news.update(version_params)
           NewsService.update_version_id_in_news(@news)
           format.html { redirect_to admin_news_version_path(version_from_news(@news.news_version_id)), notice: 'News version was successfully updated.' }
-          #format.json { render :show, status: :ok, location: @news }
         else
           format.html { render :edit }
-          #format.json { render json: @news.errors, status: :unprocessable_entity }
         end
       end
     else
