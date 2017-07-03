@@ -1,15 +1,9 @@
 class Admin::NewsVersionsController < ApplicationController
-
   before_action :set_news_version, only: [:show, :edit, :destroy]
 
   def index
     @current_user = current_user
-    if @current_user.present?
-      @news_versions = NewsVersion.all if @current_user.is_admin
-      @news_versions = NewsVersion.where('active = true AND mark_for_deletion <> true') unless @current_user.is_admin
-    else
-      @news_versions = NewsVersion.where('active = true AND is_draft = false AND mark_for_deletion <> true')
-    end
+    @news_versions = NewsService.get_news_versions(@current_user)
   end
 
   def show
@@ -19,11 +13,10 @@ class Admin::NewsVersionsController < ApplicationController
     @current_user = current_user
     @news = News.new
     @news.created_at = DateTime.now
-
     if current_user.is_admin
       @news.news_versions.build.is_draft = false
     else
-      @news.news_versions.build #draft is true by default
+      @news.news_versions.build   #draft is true by default
     end
 
   end
@@ -37,7 +30,7 @@ class Admin::NewsVersionsController < ApplicationController
     respond_to do |format|
       if @news.save
         @news.update(news_version_id: NewsVersion.last.id) if NewsVersion.last.active == true
-        format.html { redirect_to admin_news_version_path(@news), notice: 'News version was successfully created.' }
+        format.html { redirect_to admin_news_version_path(version_from_news(@news.news_version_id)), notice: 'News version was successfully created.' }
         format.json { render :show, status: :created, location: @news }
       else
         format.html { render :new }
@@ -55,7 +48,7 @@ class Admin::NewsVersionsController < ApplicationController
         if @news.update(news_version_params)
           news_active_version = NewsVersion.where("news_id = #{@news.id} AND active = true").last
           @news.update(news_version_id: news_active_version.id) if news_active_version.present?
-          format.html { redirect_to admin_news_version_path(NewsVersion.find(@news.news_version_id)), notice: 'News version was successfully updated.' }
+          format.html { redirect_to admin_news_version_path(version_from_news(@news.news_version_id)), notice: 'News version was successfully updated.' }
           format.json { render :show, status: :ok, location: @news }
         else
           format.html { render :edit }
@@ -116,6 +109,10 @@ class Admin::NewsVersionsController < ApplicationController
     def set_news_version
       @news_version = NewsVersion.find(params[:id])
       @news = @news_version.news
+    end
+
+    def version_from_news(id)
+      NewsVersion.find(id)
     end
 
     def news_version_params
