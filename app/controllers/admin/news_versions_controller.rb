@@ -6,9 +6,9 @@ class Admin::NewsVersionsController < ApplicationController
     @current_user = current_user
     if @current_user.present?
       @news_versions = NewsVersion.all if @current_user.is_admin
-      @news_versions = NewsVersion.where(active: true) unless @current_user.is_admin
+      @news_versions = NewsVersion.where('active = true AND mark_for_deletion <> true') unless @current_user.is_admin
     else
-      @news_versions = NewsVersion.where('active = true AND is_draft = false')
+      @news_versions = NewsVersion.where('active = true AND is_draft = false AND mark_for_deletion <> true')
     end
   end
 
@@ -21,9 +21,9 @@ class Admin::NewsVersionsController < ApplicationController
     @news.created_at = DateTime.now
 
     if current_user.is_admin
-      @news.news_versions.build.is_draft = true
+      @news.news_versions.build.is_draft = false
     else
-      @news.news_versions.build
+      @news.news_versions.build #draft is true by default
     end
 
   end
@@ -53,9 +53,9 @@ class Admin::NewsVersionsController < ApplicationController
       news_version_params[:active] = true
       respond_to do |format|
         if @news.update(news_version_params)
-          version = NewsVersion.where("news_id = #{@news.id} AND active = true").last
-          @news.update(news_version_id: version.id) if version.present?
-          format.html { redirect_to admin_news_version_path(@news), notice: 'News version was successfully updated.' }
+          news_active_version = NewsVersion.where("news_id = #{@news.id} AND active = true").last
+          @news.update(news_version_id: news_active_version.id) if news_active_version.present?
+          format.html { redirect_to admin_news_version_path(NewsVersion.find(@news.news_version_id)), notice: 'News version was successfully updated.' }
           format.json { render :show, status: :ok, location: @news }
         else
           format.html { render :edit }
