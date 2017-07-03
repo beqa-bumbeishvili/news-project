@@ -9,6 +9,7 @@ class Admin::NewsVersionsController < ApplicationController
   def show
     @comment = Comment.new
     @comment.news_id = @news.id
+    @news_comments = Comment.where(news_id: @news.id)
   end
 
   def new
@@ -88,7 +89,14 @@ class Admin::NewsVersionsController < ApplicationController
   end
 
   def create_comment
-    'debug'
+    @comment = Comment.new(comment_params)
+    respond_to do |format|
+      if @comment.save
+        format.html { redirect_to admin_news_version_path(version_from_news(@comment.news.news_version_id)), notice: 'Comment was successfully created.' }
+      else
+        format.html { render :show }
+      end
+    end
   end
 
   private
@@ -106,4 +114,8 @@ class Admin::NewsVersionsController < ApplicationController
       params.require(:news).permit(:id, :number,
                                    news_versions_attributes: [:id, :news_id, :title, :content, :published_at, :is_draft, :active, :image, :created_at, :updated_at, :_destroy])
     end
+
+  def comment_params
+    params.require(:comment).permit(:id, :news_id, :comment)
+  end
 end

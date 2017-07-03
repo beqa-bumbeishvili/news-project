@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   patch '/admin/news_versions' => 'admin/news_versions#update'
   put '/admin/news_versions' => 'admin/news_versions#update'
 
-  post 'news_versions/create_comment' => 'admin/news_versions#create_comments'
+  post 'news_versions/create_comment' => 'admin/news_versions#create_comment', as: :news_comments
 
   root 'admin/news_versions#index'
 end
