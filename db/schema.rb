@@ -10,10 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170702071016) do
+ActiveRecord::Schema.define(version: 20170703115241) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "comments", force: :cascade do |t|
+    t.bigint "news_id"
+    t.string "comment"
+    t.index ["news_id"], name: "index_comments_on_news_id"
+  end
 
   create_table "news", force: :cascade do |t|
     t.integer "number"
@@ -64,6 +70,7 @@ ActiveRecord::Schema.define(version: 20170702071016) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "comments", "news"
   add_foreign_key "news", "news_versions"
   add_foreign_key "news_versions", "news"
 end
