@@ -36,6 +36,7 @@ class Admin::NewsVersionsController < ApplicationController
     @news = News.new(news_version_params)
     respond_to do |format|
       if @news.save
+        @news.update(news_version_id: NewsVersion.last.id) if NewsVersion.last.active == true
         format.html { redirect_to admin_news_version_path(@news), notice: 'News version was successfully created.' }
         format.json { render :show, status: :created, location: @news }
       else
@@ -52,6 +53,8 @@ class Admin::NewsVersionsController < ApplicationController
       news_version_params[:active] = true
       respond_to do |format|
         if @news.update(news_version_params)
+          version = NewsVersion.where("news_id = #{@news.id} AND active = true").last
+          @news.update(news_version_id: version.id) if version.present?
           format.html { redirect_to admin_news_version_path(@news), notice: 'News version was successfully updated.' }
           format.json { render :show, status: :ok, location: @news }
         else
@@ -82,7 +85,10 @@ class Admin::NewsVersionsController < ApplicationController
   end
 
   def activate_version
-    NewsVersion.find(params[:id]).update(active: true)
+    @version = NewsVersion.find(params[:id])
+    if @version.update(active: true)
+      @version.news.update(news_version_id: @version.id)
+    end
     @current_user = current_user
     if @current_user.present?
       @news_versions = NewsVersion.all if @current_user.is_admin
@@ -108,8 +114,8 @@ class Admin::NewsVersionsController < ApplicationController
   private
 
     def set_news_version
-      @news = News.find(params[:id])
-      @news_version = @news.news_versions.last
+      @news_version = NewsVersion.find(params[:id])
+      @news = @news_version.news
     end
 
     def news_version_params

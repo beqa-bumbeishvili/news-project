@@ -5,7 +5,8 @@
 <table>
   <thead>
     <tr>
-      <th>News number</th>
+      <th>News id</th>
+      <th>version id</th>
       <th>Title</th>
       <th>Content</th>
       <th>Published at</th>
@@ -18,7 +19,8 @@
   <tbody>
     <% @news_versions.each do |news_version| %>
       <tr>
-        <td><%= news_version.news.number %></td>
+        <td><%= news_version.news.id %></td>
+        <td><%= news_version.id %></td>
         <td><%= news_version.title %></td>
         <td><%= news_version.content %></td>
         <td><%= news_version.published_at %></td>
