@@ -7,6 +7,8 @@ class Admin::NewsVersionsController < ApplicationController
   end
 
   def show
+    @comment = Comment.new
+    @comment.news_id = @news.id
   end
 
   def new
@@ -83,6 +85,10 @@ class Admin::NewsVersionsController < ApplicationController
     @current_user = current_user
     @news_versions = NewsService.get_news_versions(@current_user)
     render :index
+  end
+
+  def create_comment
+    'debug'
   end
 
   private
