@@ -3,6 +3,7 @@ require 'test_helper'
 class NewsVersionsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @news_version = news_versions(:one)
+    current_user = User.first
   end
 
   test 'should get index' do
