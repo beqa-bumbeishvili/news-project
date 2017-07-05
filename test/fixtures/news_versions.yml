@@ -5,7 +5,6 @@ one:
   title: MyString
   content: MyString
   published_at: 2017-06-28 18:07:13
-  post_type: one
   created_at: 
   updated_at: 2017-06-28 18:07:13
 
@@ -14,6 +13,5 @@ two:
   title: MyString
   content: MyString
   published_at: 2017-06-28 18:07:13
-  post_type: two
   created_at: 
   updated_at: 2017-06-28 18:07:13

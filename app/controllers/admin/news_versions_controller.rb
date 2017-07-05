@@ -115,7 +115,7 @@ class Admin::NewsVersionsController < ApplicationController
                                    news_versions_attributes: [:id, :news_id, :title, :content, :published_at, :is_draft, :active, :image, :created_at, :updated_at, :_destroy])
     end
 
-  def comment_params
+    def comment_params
     params.require(:comment).permit(:id, :news_id, :comment)
   end
 end
